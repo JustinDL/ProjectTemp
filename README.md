@@ -1,5 +1,5 @@
-# Week 4 example follow along
-> following week 4 lecture!
+# Project based on follow along
+> following class lectures!
 
 ## Sample `.env`
 
