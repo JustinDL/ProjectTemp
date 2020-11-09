@@ -3,13 +3,39 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import { v4 as uuidv4 } from 'uuid';
+import post from './models/post';
+import { Mongoose } from 'mongoose';
+import { connectDb } from './models';
+
+
 
 const app = express();
+
+
+// requires bodyParser which allows server to read json from postman
+const bodyParser = require('body-parser');
+app.use(bodyParser.json());
+
+// requires post.js
+const Post = require('./models/post');
 
 // how to call from env file
 // port in env file because it is hidden from front end
 const PORT = process.env.PORT;
 
+
+
+// database connection then run app listen
+connectDb().then(() => {
+
+    app.listen(process.env.PORT, () => {
+        console.log(`Project is running on port ${process.env.PORT}!`);
+    });
+});
+
+
+
+// unused just an example
 const users = {
     1: {
         id: '1',
@@ -30,21 +56,6 @@ const users = {
 
 };
 
-const urls = {
-    1: {
-        id: '1',
-        target: 'https://markrabey.com',
-        userId: '1',
-        shortCode: 'xyz123',
-    },
-    2: {
-        id: '2',
-        target: 'https://stevesomeguy.com',
-        userId: '2',
-        shortCode: 'abc345',
-    }
-
-};
 
 
 // cors -- teacher will get into it later
@@ -58,17 +69,34 @@ app.use(cors());
 // read
 app.get('/', (req, res) => {
 
-    //res.send('Hello API');
     return res.send('Received GET request');
 
 });
-// create
+
+
+
+// create using post.js
 app.post('/', (req, res) => {
 
-    //res.send('Hello API');
-    return res.send('Received POST request');
-
+    const post = new Post({
+        title: req.body.title,
+        description: req.body.description
+    });
+    post.save()
+    .then(data => {
+        res.json(data);
+    })
+    .catch(err => {
+        res.json({
+            message: err 
+        });
+    });
 });
+
+
+
+
+
 // update
 app.put('/', (req, res) => {
 
@@ -114,7 +142,3 @@ app.delete('/users', (req, res) => {
 
 });
 
-// web based aps are on port 80
-app.listen(process.env.PORT, () => {
-    console.log(`Week 4 is running on port ${process.env.PORT}!`);
-});
