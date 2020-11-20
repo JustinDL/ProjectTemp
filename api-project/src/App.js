@@ -1,5 +1,4 @@
-import logo from './logo.svg';
-import './App.css';
+
 import { 
   BrowserRouter as Router,
   Switch,
@@ -7,7 +6,7 @@ import {
   Link,} from 'react-router-dom';
 
 import Header from './components/header'; 
-
+import Users from './components/users';
 
 function App() {
   return (
@@ -18,7 +17,7 @@ function App() {
         <Switch>
           
           <Route path="/Users">
-            <div>Users</div>
+            <Users />
           </Route>
 
           <Route path="/">
