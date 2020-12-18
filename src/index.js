@@ -4,8 +4,8 @@ import express from 'express';
 import cors from 'cors';
 import { v4 as uuidv4 } from 'uuid';
 import post from './models/post';
-import { Mongoose } from 'mongoose';
-import { connectDb } from './models';
+import { models, Mongoose } from 'mongoose';
+import myModels, { connectDb } from './models';
 
 
 
@@ -23,16 +23,41 @@ const Post = require('./models/post');
 // port in env file because it is hidden from front end
 const PORT = process.env.PORT;
 
-
+const eraseDataOnConnect = process.env.NODE_ENV !== 'production';
 
 // database connection then run app listen
-connectDb().then(() => {
+connectDb().then(async () => {
+    if (eraseDataOnConnect){
+        console.log('creating default data');
+        await Promise.all([
+            myModels.User.deleteMany({}), 
+            myModels.Quote.deleteMany({}),
+        ]);
 
+        createUsersWithQuotes();
+    }
     app.listen(process.env.PORT, () => {
         console.log(`Project is running on port ${process.env.PORT}!`);
     });
+}).catch(err => {
+    console.error(err.message);
 });
 
+const createUsersWithQuotes = async() =>{
+    const user1 = new myModels.User({
+        firstName: 'Justin',
+        lastName: 'Lucas',
+        email: 'random@email.com',
+    });
+    await user1.save();
+
+    const quote1 = new myModels.Quote({
+        quote: 'per aspera ad astra',
+        author: 'John James Ingalls',
+        userId: user1.id,
+    });
+    await quote1.save();
+};
 
 
 // unused just an example
@@ -77,7 +102,7 @@ app.get('/', (req, res) => {
 
 // create using post.js
 app.post('/', (req, res) => {
-
+    const id = uuidv4();
     const post = new Post({
         title: req.body.title,
         description: req.body.description

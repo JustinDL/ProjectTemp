@@ -1,5 +1,7 @@
 import mongoose from 'mongoose';
 
+import User from './user';
+import Quote from './quotes';
 
 
 const connectDb = () => {
@@ -12,4 +14,8 @@ const connectDb = () => {
     });
 };
 
+
+const models = { User, Quote };
+
 export { connectDb };
+export default models;
