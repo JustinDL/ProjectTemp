@@ -8,6 +8,25 @@ import {
 import Header from './components/header'; 
 import Users from './components/users';
 
+// firebase stuff
+import withFirebaseAuth from 'react-with-firebase-auth'
+import firebase from 'firebase/app';
+import 'firebase/auth';
+import firebaseConfig from './firebaseConfig';
+
+const firebaseApp = firebase.initializeApp(firebaseConfig);
+
+const firebaseAppAuth = firebaseApp.auth();
+const providers = {
+  googleProvider: new firebase.auth.GoogleAuthProvider(),
+};
+
+const {
+  user,
+  signOut,
+  signInWithGoogle,
+} = this.props;
+
 function App() {
   return (
     <Router>
@@ -31,4 +50,7 @@ function App() {
   );
 }
 
-export default App;
+export default withFirebaseAuth({
+  providers,
+  firebaseAppAuth,
+})(App);
