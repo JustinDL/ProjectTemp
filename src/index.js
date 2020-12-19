@@ -6,12 +6,17 @@ import { v4 as uuidv4 } from 'uuid';
 import post from './models/post';
 import { models, Mongoose } from 'mongoose';
 import myModels, { connectDb } from './models';
+import Quote from './models/quotes';
+import quoteRoutes from './routes/quote';
 
 
 
 const app = express();
 
-
+app.use(cors()); 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use('/quote', quoteRoutes);
 // requires bodyParser which allows server to read json from postman
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
@@ -84,7 +89,7 @@ const users = {
 
 
 // cors -- teacher will get into it later
-app.use(cors());
+
 
 
 //routes in express
@@ -92,9 +97,9 @@ app.use(cors());
 // often at least 2 get requests. one that gets everything and then some that get specific things
 
 // read
-app.get('/', (req, res) => {
+app.get('/:userId', (req, res) => {
 
-    return res.send('Received GET request');
+
 
 });
 
@@ -118,52 +123,4 @@ app.post('/', (req, res) => {
     });
 });
 
-
-
-
-
-// update
-app.put('/', (req, res) => {
-
-    //res.send('Hello API');
-    return res.send('Received PUT request');
-
-});
-// delete
-app.delete('/', (req, res) => {
-
-    //res.send('Hello API');
-    return res.send('Received DELETE request');
-
-});
-
-// USERS
-// read
-app.get('/users/:userId', (req, res) => {
-
-    //res.send('Hello API');
-    return res.send(users[req.params.userId]);
-
-});
-// create
-app.post('/users', (req, res) => {
-
-    //res.send('Hello API');
-    return res.send('Received POST users request');
-
-});
-// update
-app.put('/users/:userId', (req, res) => {
-
-    //res.send('Hello API');
-    return res.send(`Received PUT users request on user/${req.params.userId}`);
-
-});
-// delete
-app.delete('/users', (req, res) => {
-
-    //res.send('Hello API');
-    return res.send('Received DELETE users request');
-
-});
 
